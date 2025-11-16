@@ -1,0 +1,43 @@
+# Mini CRM - Configuración Apache
+
+# Proteger archivos sensibles
+<FilesMatch "^(config|conexion|auth)\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Deshabilitar listado de directorios
+Options -Indexes
+
+# Proteger carpeta includes
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^sql/ - [F,L]
+</IfModule>
+
+# Configuración de PHP
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+    php_value max_execution_time 300
+    php_value session.cookie_httponly 1
+</IfModule>
+
+# Tipos MIME
+AddType application/pdf .pdf
+AddType image/jpeg .jpg .jpeg
+AddType image/png .png
+
+# Prevenir acceso a archivos de configuración
+<FilesMatch "\.(sql|md|gitignore)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
